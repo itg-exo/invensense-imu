@@ -81,7 +81,10 @@ bool Mpu9250::Begin() {
         return false;
     }
     if ((who_am_i_ != WHOAMI_MPU9250_) && (who_am_i_ != WHOAMI_MPU9255_)) {
-        Serial.println("Error right here - 5");
+        Serial.print("WHOAMI returned: ");
+        Serial.println(who_am_i_);
+        Serial.print("WHOAMI expected: ");
+        Serial.println(WHOAMI_MPU9250_);
         return false;
     }
     /* Enable I2C master mode */
