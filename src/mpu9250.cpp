@@ -81,11 +81,16 @@ bool Mpu9250::Begin() {
         return false;
     }
     if ((who_am_i_ != WHOAMI_MPU9250_) && (who_am_i_ != WHOAMI_MPU9255_)) {
-        Serial.print("WHOAMI returned: ");
-        Serial.println(who_am_i_);
-        Serial.print("WHOAMI expected: ");
-        Serial.println(WHOAMI_MPU9250_);
-        return false;
+        Serial.print("MPU9250 WHOAMI returned: ");
+        Serial.println(who_am_i_, HEX);
+        Serial.print("MPU9250 WHOAMI expected: ");
+        Serial.println(WHOAMI_MPU9250_, HEX);
+        if ((0x70 <= who_am_i_) & (who_am_i_ <= 0x75)) {
+            Serial.println("Allowing values in range 0x70-0x75");
+        } else {
+            Serial.println("Not in permitted range, WHO_AM_I test failed.");
+            return false;
+        }
     }
     /* Enable I2C master mode */
     if (!WriteRegister(USER_CTRL_, I2C_MST_EN_)) {
@@ -103,8 +108,16 @@ bool Mpu9250::Begin() {
         return false;
     }
     if (who_am_i_ != WHOAMI_AK8963_) {
-        Serial.println("Error right here - 9");
-        return false;
+        Serial.print("AK8963 WHOAMI returned: ");
+        Serial.println(who_am_i_, HEX);
+        Serial.print("AK8963 WHOAMI expected: ");
+        Serial.println(WHOAMI_AK8963_, HEX);
+        if (who_am_i_ == 0x00) {
+            Serial.println("Allowing 0x00");
+        } else {
+            Serial.println("Not in permitted range, WHO_AM_I test failed.");
+            return false;
+        }
     }
     /* Get the magnetometer calibration */
     /* Set AK8963 to power down */
